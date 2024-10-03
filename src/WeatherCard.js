@@ -12,6 +12,8 @@ export default function WeatherCard() {
   const [localidade, setLocalidade] = useState("getúlio vargas,rs,brasil"); // Inicializa localidade com o texto
   const [latitude, setLatitude] = useState('-27.8878'); // Adiciona estado para latitude
   const [longitude, setLongitude] = useState('-52.2257'); // Adiciona estado para longitude
+  const [sunrise, setSunrise] = useState(null);
+  const [sunset, setSunset] = useState(null);
 
   // useEffect para chamar getWeather quando searchQuery mudar
   useEffect(() => {
@@ -34,6 +36,15 @@ export default function WeatherCard() {
     }
   }, [latitude, longitude]); // Monitora as mudanças em latitude e longitude
 
+  //Obter data e hora do Sunrise e Sunset
+  const setSunriseSunset = () => {
+    if (weather) {
+      const sunriseDate = new Date(weather.sys.sunrise * 1000);
+      const sunsetDate = new Date(weather.sys.sunset * 1000);
+      setSunrise(sunriseDate.toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' }));
+      setSunset(sunsetDate.toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' }));
+    }
+  }
 
   // Função para obter os dados da API Weather
   const getWeather = async () => {
@@ -42,6 +53,7 @@ export default function WeatherCard() {
       setWeather(response1.data);
       setLatitude(response1.data.coord.lat); // Atualiza latitude após obter dados do weather
       setLongitude(response1.data.coord.lon); // Atualiza longitude após obter dados do weather
+      setSunriseSunset();
     } catch (error) {
       console.error(error);
     }
@@ -55,9 +67,6 @@ export default function WeatherCard() {
       console.error(error);
     }
   };
-
-
-  console.log(weather)
 
   return (
     <div>
@@ -111,17 +120,17 @@ export default function WeatherCard() {
                 
                 <div className="row">
                   <div className="col-6 mb-3">
-                    <h5>Máxima</h5>
+                    <h5>Nascer do sol</h5>
                     <div className="d-flex justify-content-center align-items-center">
-                      <i className="bi bi-arrow-up fs-4 me-2"></i> {/* Ícone de temperatura máxima */}
-                      <h4>{weather.main.temp_max}°C</h4>
+                      <i className="bi bi-sunrise fs-1 me-2"></i> {/* Ícone de temperatura máxima */}
+                      <h4>{sunrise}</h4>
                     </div>
                   </div>
                   <div className="col-6 mb-3">
-                    <h5>Mínima</h5>
+                    <h5>Pôr do sol</h5>
                     <div className="d-flex justify-content-center align-items-center">
-                      <i className="bi bi-arrow-down fs-4 me-2"></i> {/* Ícone de temperatura mínima */}
-                      <h4>{weather.main.temp_min}°C</h4>
+                      <i className="bi bi-sunset fs-1 me-2"></i>
+                      <h4>{sunset}</h4>
                     </div>
                   </div>
                 </div>

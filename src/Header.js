@@ -47,7 +47,16 @@ export default function Header() {
           <div className="col-md-auto">{/* Div para ajustar o lyout */}</div>
           <div className="col col-lg-4 text-center">
             <div className="input-group mb-3">
-              <input className="form-control" placeholder="Entre a cidade, estado, país" value={pesquisa.searchQuery} onChange={handleSearchQueryChange} />
+              <input className="form-control" 
+                placeholder="Entre a cidade, estado, país" 
+                value={pesquisa.searchQuery} 
+                onChange={handleSearchQueryChange} 
+                onKeyDown={(event) => {
+                  if (event.key === "Enter") {
+                    handleSearchClick();
+                  }
+                }} 
+              />
               <button className="btn btn-dark" type="button" onClick={handleSearchClick}>Pesquisar</button>
             </div>
           </div>
