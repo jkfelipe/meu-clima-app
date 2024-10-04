@@ -2,6 +2,7 @@ import React, { useEffect, useState, useContext  } from 'react';
 import axios from 'axios';
 import SearchContext from './SearchContext'; // Importe o context
 import WeatherIcon from './WeatherIcon';
+import WindDirection from './WindDirection';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 
 
@@ -36,16 +37,6 @@ export default function WeatherCard() {
     }
   }, [latitude, longitude]); // Monitora as mudanças em latitude e longitude
 
-  //Obter data e hora do Sunrise e Sunset
-  const setSunriseSunset = () => {
-    if (weather) {
-      const sunriseDate = new Date(weather.sys.sunrise * 1000);
-      const sunsetDate = new Date(weather.sys.sunset * 1000);
-      setSunrise(sunriseDate.toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' }));
-      setSunset(sunsetDate.toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' }));
-    }
-  }
-
   // Função para obter os dados da API Weather
   const getWeather = async () => {
     try {
@@ -53,7 +44,13 @@ export default function WeatherCard() {
       setWeather(response1.data);
       setLatitude(response1.data.coord.lat); // Atualiza latitude após obter dados do weather
       setLongitude(response1.data.coord.lon); // Atualiza longitude após obter dados do weather
-      setSunriseSunset();
+
+      // Obtém hora do nascer e por do sol
+      const sunriseDate = new Date(response1.data.sys.sunrise * 1000);
+      const sunsetDate = new Date(response1.data.sys.sunset * 1000);
+      setSunrise(sunriseDate.toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' }).split(", ")[1].trim());
+      setSunset(sunsetDate.toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' }).split(", ")[1].trim());
+
     } catch (error) {
       console.error(error);
     }
@@ -75,15 +72,16 @@ export default function WeatherCard() {
           <span className="visually-hidden">Loading...</span>
         </div>
       ) : (
-        <div className="p-5 mb-3 bg-body-tertiary rounded-3">
+        <div className="p-5 bg-body-tertiary">
           <div className="row">
+
             {/* Primeira Coluna */}
-            <div className="col-md-6">
-              <div className="container-fluid py-5">
+            <div className="col-md-6 bg-body-tertiary rounded-3 mx-auto border p-3">
+              <div className="container-fluid py-5 text-center text-md-start">
                 <div className="feature-icon d-inline-flex align-items-center justify-content-center fs-2 mb-3">
-                  <WeatherIcon weatherCode={weather.weather[0].icon} />
+                  <WeatherIcon weatherCode={weather.weather[0].icon} /> 
                 </div>
-  
+
                 {geocode?.length > 0 && (
                   <>
                     <h1 className="display-5 fw-bold">{geocode[0].name}</h1>
@@ -92,58 +90,147 @@ export default function WeatherCard() {
                     </h3>
                   </>
                 )}
-  
+
                 <h5>
                   Latitude {weather.coord.lat}, Longitude {weather.coord.lon}
                 </h5>
-                <br/>
-                <h5>Condição atual:</h5>
-                <h1>
-                  {weather.weather[0].description[0].toUpperCase() +
-                    weather.weather[0].description.substring(1)}
-                </h1>
+
+                <br />
+
+                <div className="col">
+                  <h5>Condição climática</h5>
+                  <div className="d-flex justify-content-center justify-content-md-start align-items-center">
+                    {/* justify-content-md-start alinha à esquerda em telas grandes */}
+                    <h1>
+                      {weather.weather[0].description[0].toUpperCase() +
+                        weather.weather[0].description.substring(1)}
+                    </h1>
+                  </div>
+                </div>
+                
               </div>
             </div>
-  
+ 
+            <div className="d-block d-md-none my-3">
+              <hr />
+            </div>
+
             {/* Segunda Coluna */}
-            <div className="col-md-6 d-flex align-items-center justify-content-center">
+            <div className="col-md-6 mt-2 d-flex align-items-center justify-content-center">
               <div className="container-fluid text-center">
-                <div className="row mb-4">
-                  <div className="col">
-                    <h2 className="mb-3">Temperatura Atual</h2>
+
+                <div className="row">
+
+                  <div className="col-12 col-md-6 mb-3 rounded-3 border p-3">
+                    <h5>Temperatura Atual</h5>
                     <div className="d-flex justify-content-center align-items-center">
-                      <i className="bi bi-thermometer-half fs-1 me-2"></i> {/* Ícone da temperatura */}
+                      <i className="bi bi-thermometer-half fs-2 me-2"></i>
                       <h1>{weather.main.temp}°C</h1>
                     </div>
                   </div>
+
+                  <div className="col-12 col-md-6 mb-3 rounded-3 border p-3">
+                    <h5>Sensação Térmica</h5>
+                    <div className="d-flex justify-content-center align-items-center">
+                      <i className="bi bi-thermometer-sun fs-2 me-2"></i>
+                      <h1>{weather.main.feels_like}°C</h1>
+                    </div>
+                  </div>
+
                 </div>
-                
+
                 <div className="row">
-                  <div className="col-6 mb-3">
+
+                  <div className="col-12 col-md-6 mb-3 rounded-3 border p-3">
                     <h5>Nascer do sol</h5>
                     <div className="d-flex justify-content-center align-items-center">
-                      <i className="bi bi-sunrise fs-1 me-2"></i> {/* Ícone de temperatura máxima */}
+                      <i className="bi bi-sunrise fs-2 me-2"></i>
                       <h4>{sunrise}</h4>
                     </div>
                   </div>
-                  <div className="col-6 mb-3">
+
+                  <div className="col-12 col-md-6 mb-3 rounded-3 border p-3">
                     <h5>Pôr do sol</h5>
                     <div className="d-flex justify-content-center align-items-center">
-                      <i className="bi bi-sunset fs-1 me-2"></i>
+                      <i className="bi bi-sunset fs-2 me-2"></i>
                       <h4>{sunset}</h4>
                     </div>
                   </div>
+
                 </div>
-                
+
                 <div className="row">
-                  <div className="col-12">
-                    <h5>Sensação Térmica</h5>
+
+                  <div className="col-12 col-md-6 mb-3 rounded-3 border p-3">
+                    <h5>Umidade</h5>
                     <div className="d-flex justify-content-center align-items-center">
-                      <i className="bi bi-wind fs-4 me-2"></i> {/* Ícone de sensação térmica */}
-                      <h4>{weather.main.feels_like}°C</h4>
+                    <i className="bi bi-droplet fs-4 me-2"></i>
+                      <h4>{weather.main.humidity}%</h4>
                     </div>
                   </div>
+
+                  <div className="col-12 col-md-6 mb-3 rounded-3 border p-3">
+                    <h5>Pressão atmosférica</h5>
+                    <div className="d-flex justify-content-center align-items-center">
+                      <i className="bi bi-speedometer fs-3 me-2"></i>
+                      <h4>{weather.main.pressure} hPa</h4>
+                    </div>
+                  </div>
+
                 </div>
+
+                <div className="row">
+
+                  <div className="col-12 col-md-6 mb-3 rounded-3 border p-3">
+                    <h5>Velocidade dos ventos</h5>
+                    <div className="d-flex justify-content-center align-items-center">
+                    <i className="bi bi-wind fs-4 me-2"></i>
+                    <h4>{weather.wind.speed} m/s </h4>
+                    </div>
+                  </div>
+
+                  <div className="col-12 col-md-6 mb-3 rounded-3 border p-3">
+                    <h5>Direção dos ventos</h5>
+                    <div className="d-flex justify-content-center align-items-center">
+                      <i className="bi bi-flag fs-4 me-2"></i>
+                      <h4><WindDirection degrees={weather.wind.deg} /></h4>
+                    </div>
+                  </div>
+
+                </div>
+
+                <div className="row">
+                  <div className="col-12 col-md-6 mb-3 rounded-3 border p-3">
+                  
+                    <h5>Precipitação</h5>
+                    <div className="d-flex justify-content-center align-items-center">
+                    
+                      {/*Precipitação chuv ou nece */}
+                      {weather.snow ? (
+                        <>
+                          <i className="bi bi-cloud-snow fs-4 me-2" title='Neve'></i>
+                          <h4>{weather.snow ? weather.snow['1h'] || 0 : 0} mm </h4>
+                        </>
+                      ) : (
+                        <>
+                          <i className="bi bi-cloud-rain fs-4 me-2" title='Chuva'></i>
+                          <h4>{weather.rain ? weather.rain['1h'] || 0 : 0} mm </h4>
+                        </>
+                      )}
+
+                    </div>
+                  </div>
+
+                  <div className="col-12 col-md-6 mb-3 rounded-3 border p-3">
+                    <h5>Nebulosidade</h5>
+                    <div className="d-flex justify-content-center align-items-center">
+                      <i className="bi bi-cloud fs-4 me-2"></i>
+                      <h4>{weather.clouds.all}% </h4>
+                    </div>
+                  </div>
+
+                </div>
+
               </div>
             </div>
 
