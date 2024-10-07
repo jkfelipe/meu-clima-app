@@ -1,6 +1,5 @@
 import React, { useState, useContext } from 'react';
 import SearchContext from './SearchContext'; // Importe o context
-import Navbar from './Navbar';
 import { Link } from 'react-router-dom';
 
 export default function Header() {
@@ -70,10 +69,8 @@ export default function Header() {
             </button>
             <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
               <div class="navbar-nav">
-                <Link className='nav-link' to="/">Home</Link>
-                <Link className='nav-link' to="/weather">Weather</Link>
-                <Link className='nav-link' to="/forecast">Forecast</Link>
-                <Link className='nav-link' to="/teste">Teste</Link>
+                <Link className='nav-link' to="/">Condição Atual</Link>
+                <Link className='nav-link' to="/forecast">Previsão do Tempo</Link>
               </div>
               </div>
             </div>

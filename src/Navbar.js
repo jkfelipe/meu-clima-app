@@ -10,10 +10,8 @@ export default function Navbar() {
         </button>
         <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
           <div class="navbar-nav">
-            <Link className='nav-link' to="/">Home</Link>
-            <Link className='nav-link' to="/weather">Weather</Link>
+            <Link className='nav-link' to="/">Weather</Link>
             <Link className='nav-link' to="/forecast">Forecast</Link>
-            <Link className='nav-link' to="/teste">Teste</Link>
           </div>
           </div>
         </div>

@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext  } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import axios from 'axios';
 import SearchContext from './SearchContext'; // Importe o context
 import WeatherIcon from './WeatherIcon';
@@ -10,16 +10,27 @@ export default function WeatherCard() {
   const [weather, setWeather] = useState(null);
   const [geocode, setReverseGeocode] = useState(null);
   const {searchQuery} = useContext(SearchContext); // Use useContext para obter o valor do context
-  const [localidade, setLocalidade] = useState("getúlio vargas,rs,brasil"); // Inicializa localidade com o texto
-  const [latitude, setLatitude] = useState('-27.8878'); // Adiciona estado para latitude
-  const [longitude, setLongitude] = useState('-52.2257'); // Adiciona estado para longitude
+  const [localidade, setLocalidade] = useState(null); // Inicializa localidade com o texto
+  const [latitude, setLatitude] = useState(null); // Adiciona estado para latitude
+  const [longitude, setLongitude] = useState(null); // Adiciona estado para longitude
   const [sunrise, setSunrise] = useState(null);
   const [sunset, setSunset] = useState(null);
+
+  //Verifica se há alguma pesquisa previamente feita
+  useEffect(() => {
+    const savedSearchQuery = localStorage.getItem('searchQuery');
+    if (savedSearchQuery) {
+      setLocalidade(savedSearchQuery); // Atualiza a localidade com o valor salvo
+    } else {
+      setLocalidade("getúlio vargas,rs,brasil");
+    }
+  }, []);
 
   // useEffect para chamar getWeather quando searchQuery mudar
   useEffect(() => {
     if (searchQuery) {
       setLocalidade(searchQuery); // Atualiza localidade
+      localStorage.setItem('searchQuery', searchQuery); // Salva no Local Storage
     }
   }, [searchQuery]);
 
@@ -72,168 +83,146 @@ export default function WeatherCard() {
           <span className="visually-hidden">Loading...</span>
         </div>
       ) : (
-        <div className="p-5 bg-body-tertiary">
+        <div className="container-fluid">
           <div className="row">
 
-            {/* Primeira Coluna */}
-            <div className="col-md-6 bg-body-tertiary rounded-3 mx-auto border p-3">
-              <div className="container-fluid py-5 text-center text-md-start">
-                <div className="feature-icon d-inline-flex align-items-center justify-content-center fs-2 mb-3">
-                  <WeatherIcon weatherCode={weather.weather[0].icon} /> 
+            {/* Primeira Coluna (ocupa metade da tela) */}
+            <div className="col-12 col-md-6 d-flex flex-column bg-body-tertiary rounded-3 border p-3">
+              <div className="container-fluid mt-3 text-md-start flex-grow-1 d-flex flex-column">
+                <div className="feature-icon d-inline-flex align-items-center fs-2 mb-3">
+                  <WeatherIcon weatherCode={weather.weather[0].icon} />
                 </div>
 
                 {geocode?.length > 0 && (
                   <>
                     <h1 className="display-5 fw-bold">{geocode[0].name}</h1>
-                    <h3>
-                      {geocode[0].state}, {geocode[0].country}
-                    </h3>
+                    <h3>{geocode[0].state}, {geocode[0].country}</h3>
                   </>
                 )}
 
-                <h5>
-                  Latitude {weather.coord.lat}, Longitude {weather.coord.lon}
-                </h5>
-
+                <h5>Latitude {weather.coord.lat}, Longitude {weather.coord.lon}</h5>
                 <br />
-
                 <div className="col">
-                  <h5>Condição climática</h5>
-                  <div className="d-flex justify-content-center justify-content-md-start align-items-center">
-                    {/* justify-content-md-start alinha à esquerda em telas grandes */}
+                  <h5>Condição climática:</h5>
+                  <div className="d-flex justify-content-md-start">
                     <h1>
-                      {weather.weather[0].description[0].toUpperCase() +
-                        weather.weather[0].description.substring(1)}
+                      {weather.weather[0].description[0].toUpperCase() + 
+                      weather.weather[0].description.substring(1)}
                     </h1>
                   </div>
+                  <div className="d-flex">                    
+                    {/*Precipitação chuv ou nece */}
+                    {weather.snow ? (
+                      <>
+                        <h4>
+                          <i className="bi bi-cloud-snow fs-4 me-2" title='Neve'></i> Volume de neve {weather.snow ? weather.snow['1h'] || 0 : 0} mm 
+                        </h4>
+                      </>
+                    ) : (
+                      <>
+                        <h4>
+                          <i className="bi bi-cloud-rain fs-4 me-2" title='Chuva'></i> Volume de chuva {weather.rain ? weather.rain['1h'] || 0 : 0} mm 
+                        </h4>
+                      </>
+                    )}
+                  </div>
+                  <h5>
+                    <i className="bi bi-cloud fs-4 me-2" title='Chuva'></i> Nebulosidade de {weather.clouds.all}% 
+                  </h5>
                 </div>
-                
               </div>
             </div>
- 
+
             <div className="d-block d-md-none my-3">
               <hr />
             </div>
 
-            {/* Segunda Coluna */}
-            <div className="col-md-6 mt-2 d-flex align-items-center justify-content-center">
-              <div className="container-fluid text-center">
+            {/* Segunda Coluna (1/4 da tela) */}
+            <div className="col-12 col-md-3 d-flex flex-column justify-content-center h-100">
+              <div className="container-fluid text-center h-100 d-flex flex-column justify-content-around">
 
-                <div className="row">
-
-                  <div className="col-12 col-md-6 mb-3 rounded-3 border p-3">
+                {/* Primeira linha de colunas */}
+                <div className="row align-items-stretch">
+                  <div className="col-12 mb-3 p-3 border rounded-3 bg-body-tertiary d-flex flex-column justify-content-center">
                     <h5>Temperatura Atual</h5>
                     <div className="d-flex justify-content-center align-items-center">
                       <i className="bi bi-thermometer-half fs-2 me-2"></i>
-                      <h1>{weather.main.temp}°C</h1>
+                      <h4>{weather.main.temp}°C</h4>
                     </div>
                   </div>
-
-                  <div className="col-12 col-md-6 mb-3 rounded-3 border p-3">
-                    <h5>Sensação Térmica</h5>
-                    <div className="d-flex justify-content-center align-items-center">
-                      <i className="bi bi-thermometer-sun fs-2 me-2"></i>
-                      <h1>{weather.main.feels_like}°C</h1>
-                    </div>
-                  </div>
-
-                </div>
-
-                <div className="row">
-
-                  <div className="col-12 col-md-6 mb-3 rounded-3 border p-3">
-                    <h5>Nascer do sol</h5>
-                    <div className="d-flex justify-content-center align-items-center">
-                      <i className="bi bi-sunrise fs-2 me-2"></i>
-                      <h4>{sunrise}</h4>
-                    </div>
-                  </div>
-
-                  <div className="col-12 col-md-6 mb-3 rounded-3 border p-3">
-                    <h5>Pôr do sol</h5>
-                    <div className="d-flex justify-content-center align-items-center">
-                      <i className="bi bi-sunset fs-2 me-2"></i>
-                      <h4>{sunset}</h4>
-                    </div>
-                  </div>
-
-                </div>
-
-                <div className="row">
-
-                  <div className="col-12 col-md-6 mb-3 rounded-3 border p-3">
+                  <div className="col-12 mb-3 rounded-3 border p-3 bg-body-tertiary d-flex flex-column justify-content-center">
                     <h5>Umidade</h5>
                     <div className="d-flex justify-content-center align-items-center">
-                    <i className="bi bi-droplet fs-4 me-2"></i>
+                      <i className="bi bi-droplet fs-4 me-2"></i>
                       <h4>{weather.main.humidity}%</h4>
                     </div>
                   </div>
-
-                  <div className="col-12 col-md-6 mb-3 rounded-3 border p-3">
-                    <h5>Pressão atmosférica</h5>
-                    <div className="d-flex justify-content-center align-items-center">
-                      <i className="bi bi-speedometer fs-3 me-2"></i>
-                      <h4>{weather.main.pressure} hPa</h4>
-                    </div>
-                  </div>
-
                 </div>
 
-                <div className="row">
-
-                  <div className="col-12 col-md-6 mb-3 rounded-3 border p-3">
-                    <h5>Velocidade dos ventos</h5>
+                {/* Segunda linha de colunas */}
+                <div className="row align-items-stretch">
+                  <div className="col-12 mb-3 rounded-3 border p-3 bg-body-tertiary d-flex flex-column justify-content-center">
+                    <h5>Nascer do sol</h5>
                     <div className="d-flex justify-content-center align-items-center">
-                    <i className="bi bi-wind fs-4 me-2"></i>
-                    <h4>{weather.wind.speed} m/s </h4>
+                      <i className="bi bi-sunrise fs-3 me-2"></i>
+                      <h4>{sunrise}</h4>
                     </div>
                   </div>
-
-                  <div className="col-12 col-md-6 mb-3 rounded-3 border p-3">
-                    <h5>Direção dos ventos</h5>
+                  <div className="col-12 mb-3 rounded-3 border p-3 bg-body-tertiary d-flex flex-column justify-content-center">
+                    <h5>Pôr do sol</h5>
                     <div className="d-flex justify-content-center align-items-center">
-                      <i className="bi bi-flag fs-4 me-2"></i>
-                      <h4><WindDirection degrees={weather.wind.deg} /></h4>
+                      <i className="bi bi-sunset fs-3 me-2"></i>
+                      <h4>{sunset}</h4>
                     </div>
                   </div>
-
                 </div>
-
-                <div className="row">
-                  <div className="col-12 col-md-6 mb-3 rounded-3 border p-3">
-                  
-                    <h5>Precipitação</h5>
-                    <div className="d-flex justify-content-center align-items-center">
-                    
-                      {/*Precipitação chuv ou nece */}
-                      {weather.snow ? (
-                        <>
-                          <i className="bi bi-cloud-snow fs-4 me-2" title='Neve'></i>
-                          <h4>{weather.snow ? weather.snow['1h'] || 0 : 0} mm </h4>
-                        </>
-                      ) : (
-                        <>
-                          <i className="bi bi-cloud-rain fs-4 me-2" title='Chuva'></i>
-                          <h4>{weather.rain ? weather.rain['1h'] || 0 : 0} mm </h4>
-                        </>
-                      )}
-
-                    </div>
-                  </div>
-
-                  <div className="col-12 col-md-6 mb-3 rounded-3 border p-3">
-                    <h5>Nebulosidade</h5>
-                    <div className="d-flex justify-content-center align-items-center">
-                      <i className="bi bi-cloud fs-4 me-2"></i>
-                      <h4>{weather.clouds.all}% </h4>
-                    </div>
-                  </div>
-
-                </div>
-
               </div>
             </div>
 
+            {/* Terceira Coluna (1/4 da tela) */}
+            <div className="col-12 col-md-3 d-flex flex-column justify-content-center h-100">
+              <div className="container-fluid text-center">
+
+                {/* Primeira linha de colunas */}
+                <div className="row align-items-stretch">
+
+                  <div className="col-12 mb-3 rounded-3 border p-3 bg-body-tertiary d-flex flex-column justify-content-center">
+                    <h5>Sensação Térmica</h5>
+                    <div className="d-flex justify-content-center align-items-center">
+                      <i className="bi bi-thermometer-sun fs-2 me-2"></i>
+                      <h4>{weather.main.feels_like}°C</h4>
+                    </div>
+                  </div>
+
+                  
+                  <div className="col-12 mb-3 rounded-3 border p-3 bg-body-tertiary d-flex flex-column justify-content-center">
+                    <h5>Pressão atmosférica</h5>
+                    <div className="d-flex justify-content-center align-items-center">
+                      <i className="bi bi-speedometer fs-4 me-2"></i>
+                      <h4>{weather.main.pressure} hPa</h4>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Segunda linha de colunas */}
+                <div className="row align-items-stretch">
+                  <div className="col-12 mb-3 rounded-3 border p-3 bg-body-tertiary d-flex flex-column justify-content-center">
+                    <h5>Velocidade dos ventos</h5>
+                    <div className="d-flex justify-content-center align-items-center">
+                      <i className="bi bi-wind fs-3 me-2"></i>
+                      <h4>{weather.wind.speed} m/s</h4>
+                    </div>
+                  </div>
+                  <div className="col-12 mb-3 rounded-3 border p-3 bg-body-tertiary d-flex flex-column justify-content-center">
+                    <h5>Direção dos ventos</h5>
+                    <div className="d-flex justify-content-center align-items-center">
+                      <i className="bi bi-flag fs-3 me-2"></i>
+                      <h4><WindDirection degrees={weather.wind.deg} /></h4>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       )}
