@@ -10,7 +10,7 @@ export default function WeatherCard() {
   const [weather, setWeather] = useState(null);
   const [geocode, setReverseGeocode] = useState(null);
   const {searchQuery} = useContext(SearchContext); // Use useContext para obter o valor do context
-  const [localidade, setLocalidade] = useState(null); // Inicializa localidade com o texto
+  const [localidade, setLocalidade] = useState("getúlio vargas,rs,brasil"); // Inicializa localidade com o texto
   const [latitude, setLatitude] = useState(null); // Adiciona estado para latitude
   const [longitude, setLongitude] = useState(null); // Adiciona estado para longitude
   const [sunrise, setSunrise] = useState(null);
