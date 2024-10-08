@@ -23,7 +23,7 @@ Este é um aplicativo de previsão do tempo desenvolvido em React que utiliza a 
 - **Context API**: Para gerenciar o estado global da aplicação.
 
 ## Preview
-- Acesse o preview desse projeto em [forecast.trentin.eti.br](https://forecast.trentin.eti.br/)
+- Acesse o preview desse projeto em <a href="https://forecast.trentin.eti.br/" target="_blank">forecast.trentin.eti.br</a>
 
 ## Pré-requisitos
 
