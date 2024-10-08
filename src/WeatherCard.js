@@ -53,7 +53,7 @@ export default function WeatherCard() {
       setLongitude(response1.data.coord.lon); // Atualiza longitude após obter dados do weather
 
       //Obtém o nome da cidade
-      const response2 = await axios.get(`http://api.openweathermap.org/geo/1.0/reverse?lat=${response1.data.coord.lat}&lon=${response1.data.coord.lon}&appid=${process.env.REACT_APP_OPENWEATHER_API_KEY}`);
+      const response2 = await axios.get(`https://api.openweathermap.org/geo/1.0/reverse?lat=${response1.data.coord.lat}&lon=${response1.data.coord.lon}&appid=${process.env.REACT_APP_OPENWEATHER_API_KEY}`);
       setCidade(response2.data[0].name);
       setPais(response2.data[0].country);
       setEstado(response2.data[0].state);
