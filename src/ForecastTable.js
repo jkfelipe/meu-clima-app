@@ -64,10 +64,6 @@ export default function ForecastTable() {
     }
   };
 
-  useEffect(() => {
-    getForecast();
-  }, []);
-
   return(
     <div>
       <h3>Forecast (previsão)</h3>

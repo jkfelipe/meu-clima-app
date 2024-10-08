@@ -1,5 +1,3 @@
-import React, { useEffect, useState } from 'react';
-
 export default function WindDirection({degrees}, {size}) {
 
   let direction = '';

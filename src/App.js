@@ -1,11 +1,9 @@
 import './App.css';
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { SearchProvider } from './SearchContext';
 // import Navbar from './components/Navbar';
 import Weather from './Weather';
 import Forecast from './Forecast';
-import Header from './Header';
 import Home from './Home';
 import Teste from './Teste';
 
