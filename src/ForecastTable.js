@@ -66,12 +66,12 @@ export default function ForecastTable() {
 
   return(
     <div>
-      <h3>Forecast (previsão)</h3>
       {!forecast &&  
         <div className="spinner-border" role="status">
           <span className="visually-hidden">Loading...</span>
         </div>}
         {forecast && <div>
+          <h3>Forecast (previsão)</h3>
           <h1>Cidade: {forecast.city.name}, {forecast.city.country} </h1>
           <p>Latitude: {forecast.city.coord.lat} | Longitude: {forecast.city.coord.lon} </p>
           <div className="table-responsive">

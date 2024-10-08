@@ -24,8 +24,6 @@ export default function WeatherCard() {
     const savedSearchQuery = localStorage.getItem('searchQuery');
     if (savedSearchQuery) {
       setLocalidade(savedSearchQuery); // Atualiza a localidade com o valor salvo
-    } else {
-      setLocalidade("getúlio vargas,rs,brasil");
     }
   }, []);
 
@@ -34,15 +32,11 @@ export default function WeatherCard() {
     if (searchQuery) {
       setLocalidade(searchQuery); // Atualiza localidade
       localStorage.setItem('searchQuery', searchQuery); // Salva no Local Storage
-    }
-  }, [searchQuery]);
-
-  // Novo useEffect para chamar getWeather quando 'localidade' mudar
-  useEffect(() => {
-    if (localidade) {
+      getWeather();
+    } else {
       getWeather();
     }
-  }, [localidade]); // Agora monitora mudanças no valor de 'localidade'
+  }, [searchQuery]);
 
   // Função para obter os dados da API Weather
   const getWeather = async () => {
