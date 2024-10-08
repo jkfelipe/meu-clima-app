@@ -22,6 +22,9 @@ Este é um aplicativo de previsão do tempo desenvolvido em React que utiliza a 
 - **Bootstrap**: Framework CSS para estilização responsiva e moderna.
 - **Context API**: Para gerenciar o estado global da aplicação.
 
+## Preview
+- Acesse o preview desse projeto em <a href="https://forecast.trentin.eti.br/" target="_blank">forecast.trentin.eti.br</a>
+
 ## Pré-requisitos
 
 Antes de executar o projeto, verifique se você tem as seguintes dependências instaladas:
