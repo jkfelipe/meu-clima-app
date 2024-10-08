@@ -11,8 +11,8 @@ export default function WeatherCard() {
   const [geocode, setReverseGeocode] = useState(null);
   const {searchQuery} = useContext(SearchContext); // Use useContext para obter o valor do context
   const [localidade, setLocalidade] = useState("getúlio vargas,rs,brasil"); // Inicializa localidade com o texto
-  const [latitude, setLatitude] = useState(null); // Adiciona estado para latitude
-  const [longitude, setLongitude] = useState(null); // Adiciona estado para longitude
+  const [latitude, setLatitude] = useState("-27.8878"); // Adiciona estado para latitude
+  const [longitude, setLongitude] = useState("-52.2257"); // Adiciona estado para longitude
   const [sunrise, setSunrise] = useState(null);
   const [sunset, setSunset] = useState(null);
 
@@ -21,8 +21,6 @@ export default function WeatherCard() {
     const savedSearchQuery = localStorage.getItem('searchQuery');
     if (savedSearchQuery) {
       setLocalidade(savedSearchQuery); // Atualiza a localidade com o valor salvo
-    } else {
-      setLocalidade("getúlio vargas,rs,brasil");
     }
   }, []);
 
